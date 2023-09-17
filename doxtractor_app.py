@@ -12,7 +12,8 @@ from langchain.llms import GooglePalm
 from langchain.chains.question_answering import load_qa_chain
 
 
-# Hide Streamlit hamburger and tagline
+# Configure Streamlit and hide hamburger and tagline
+st.set_page_config(page_title="DoXtractor | Document Knowledge Extractor", page_icon=":page_facing_up:")
 hide_streamlit_style = """
 <style>
 #MainMenu {visibility: hidden;}
@@ -23,7 +24,7 @@ st.markdown(hide_streamlit_style, unsafe_allow_html=True)
 
 def main():
     st.header("Extract information from documents")
-    st.set_page_config(page_title="DoXtractor | Document Knowledge Extractor", page_icon=":page_facing_up:")
+    
 
     # Upload multiple PDF files
     pdf_files = st.file_uploader("Upload one or more PDF documents", type='pdf', accept_multiple_files=True)
