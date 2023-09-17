@@ -1,7 +1,8 @@
-#! /env/bin/python3
+#! /bin/python3
 
 import os
 import dill
+import magic
 import streamlit as st
 from PyPDF2 import PdfReader
 from langchain.text_splitter import RecursiveCharacterTextSplitter
@@ -10,11 +11,6 @@ from langchain.vectorstores import FAISS
 from langchain.llms import GooglePalm
 from langchain.chains.question_answering import load_qa_chain
 
-"""
-# DoXtractor!
-
-An AI that extracts knowledge and correlates information from multiple documents. 
-"""
 
 # Hide Streamlit hamburger and tagline
 hide_streamlit_style = """
@@ -26,7 +22,8 @@ footer {visibility: hidden;}
 st.markdown(hide_streamlit_style, unsafe_allow_html=True)
 
 def main():
-    st.header("Extract information from your PDF documents")
+    st.header("Extract information from documents")
+    st.set_page_config(page_title="DoXtractor | Document Knowledge Extractor", page_icon=":page_facing_up:")
 
     # Upload multiple PDF files
     pdf_files = st.file_uploader("Upload one or more PDF documents", type='pdf', accept_multiple_files=True)
@@ -35,6 +32,10 @@ def main():
 
         # Process each uploaded PDF file and combine text
         for index, pdf in enumerate(pdf_files):
+            file_type = magic.from_file(pdf, mime=True)
+            # Validate file type
+            if file_type!="application/pdf":
+                st.write(file_type)
             pdf_reader = PdfReader(pdf)
             text = ""
             
