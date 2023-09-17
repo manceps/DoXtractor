@@ -9,7 +9,6 @@ RUN apt-get update && apt-get install -y \
     curl \
     software-properties-common \
     git \
-    libmagic1 \
     && rm -rf /var/lib/apt/lists/*
 
 RUN git clone https://github.com/manceps/DoXtractor.git .

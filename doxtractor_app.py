@@ -2,7 +2,6 @@
 
 import os
 import dill
-import magic
 import streamlit as st
 from PyPDF2 import PdfReader
 from langchain.text_splitter import RecursiveCharacterTextSplitter
@@ -24,7 +23,6 @@ st.markdown(hide_streamlit_style, unsafe_allow_html=True)
 
 def main():
     # st.header("Extract information from documents")
-    
 
     # Upload multiple PDF files
     pdf_files = st.file_uploader("Upload one or more PDF documents", type='pdf', accept_multiple_files=True)
@@ -33,10 +31,6 @@ def main():
 
         # Process each uploaded PDF file and combine text
         for index, pdf in enumerate(pdf_files):
-            file_type = magic.from_file(pdf.name, mime=True)
-            # Validate file type
-            if file_type!="application/pdf":
-                st.write(file_type)
             pdf_reader = PdfReader(pdf)
             text = ""
             
