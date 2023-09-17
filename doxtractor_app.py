@@ -33,7 +33,7 @@ def main():
 
         # Process each uploaded PDF file and combine text
         for index, pdf in enumerate(pdf_files):
-            file_type = magic.from_file(pdf, mime=True)
+            file_type = magic.from_file(pdf.name, mime=True)
             # Validate file type
             if file_type!="application/pdf":
                 st.write(file_type)
