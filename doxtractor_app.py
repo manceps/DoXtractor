@@ -23,7 +23,7 @@ footer {visibility: hidden;}
 st.markdown(hide_streamlit_style, unsafe_allow_html=True)
 
 def main():
-    st.header("Extract information from documents")
+    # st.header("Extract information from documents")
     
 
     # Upload multiple PDF files
