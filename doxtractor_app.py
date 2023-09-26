@@ -70,7 +70,7 @@ def main():
             query = st.text_input("Ask questions about your documents:")
 
         except Exception as e:
-            st.write("Something went wrong! Please remove the file try a different document.")
+            st.write("Something went wrong! Please remove the file and try a different document.")
 
 
 
