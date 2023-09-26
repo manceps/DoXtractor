@@ -29,43 +29,44 @@ def main():
 
     if pdf_files:
         with st.spinner("Processing"):
+            try:
+                # Process each uploaded PDF file and combine text
+                for index, pdf in enumerate(pdf_files):
+                    pdf_reader = PdfReader(pdf)
+                    text = ""
+                    
+                    # Generate a unique name for the VectorStore based on the PDF filename
+                    store_name = pdf.name[:-4]
 
-            # Process each uploaded PDF file and combine text
-            for index, pdf in enumerate(pdf_files):
-                pdf_reader = PdfReader(pdf)
-                text = ""
-                
-                # Generate a unique name for the VectorStore based on the PDF filename
-                store_name = pdf.name[:-4]
+                    # Extract text from PDF pages
+                    for page in pdf_reader.pages:
+                        text += page.extract_text()
 
-                # Extract text from PDF pages
-                for page in pdf_reader.pages:
-                    text += page.extract_text()
+                    # Split the extracted text into smaller chunks
+                    text_splitter = RecursiveCharacterTextSplitter(
+                        chunk_size=2000,
+                        chunk_overlap=100,
+                        length_function=len
+                    )
+                    chunks = text_splitter.split_text(text=text)
 
-                # Split the extracted text into smaller chunks
-                text_splitter = RecursiveCharacterTextSplitter(
-                    chunk_size=2000,
-                    chunk_overlap=100,
-                    length_function=len
-                )
-                chunks = text_splitter.split_text(text=text)
-
-                # Check if VectorStore exists on disk, if not, create and save it
-                if os.path.exists(f"{store_name}.pkl"):
-                    with open(f"{store_name}.pkl", "rb") as f:
-                        VectorStore = dill.load(f)
-                else:
-                    embeddings = GooglePalmEmbeddings()
-                    VectorStore = FAISS.from_texts(chunks, embedding=embeddings)
-                    with open(f"{store_name}.pkl", "wb") as f:
-                        dill.dump(VectorStore, f)
-                
-                # Combine VectorStores from all documents
-                if index==0:
-                    VectorStores = VectorStore
-                else:
-                    VectorStores.merge_from(VectorStore)
-
+                    # Check if VectorStore exists on disk, if not, create and save it
+                    if os.path.exists(f"{store_name}.pkl"):
+                        with open(f"{store_name}.pkl", "rb") as f:
+                            VectorStore = dill.load(f)
+                    else:
+                        embeddings = GooglePalmEmbeddings()
+                        VectorStore = FAISS.from_texts(chunks, embedding=embeddings)
+                        with open(f"{store_name}.pkl", "wb") as f:
+                            dill.dump(VectorStore, f)
+                    
+                    # Combine VectorStores from all documents
+                    if index==0:
+                        VectorStores = VectorStore
+                    else:
+                        VectorStores.merge_from(VectorStore)
+            except Exception as e:
+                st.write("Something went wrong! Please try a different document.")
         # Accept user questions/queries
         query = st.text_input("Ask questions about your documents:")
 
