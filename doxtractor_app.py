@@ -28,8 +28,8 @@ def main():
     pdf_files = st.file_uploader("Upload one or more PDF documents", type='pdf', accept_multiple_files=True)
 
     if pdf_files:
-        with st.spinner("Processing"):
-            try:
+        try:
+            with st.spinner("Processing"):
                 # Process each uploaded PDF file and combine text
                 for index, pdf in enumerate(pdf_files):
                     pdf_reader = PdfReader(pdf)
@@ -65,10 +65,14 @@ def main():
                         VectorStores = VectorStore
                     else:
                         VectorStores.merge_from(VectorStore)
-            except Exception as e:
-                st.write("Something went wrong! Please try a different document.")
-        # Accept user questions/queries
-        query = st.text_input("Ask questions about your documents:")
+
+            # Accept user questions/queries
+            query = st.text_input("Ask questions about your documents:")
+
+        except Exception as e:
+            st.write("Something went wrong! Please remove the file try a different document.")
+
+
 
         if query:
             with st.spinner("Processing"):
