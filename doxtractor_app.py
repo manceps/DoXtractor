@@ -73,20 +73,20 @@ def main():
             st.write("Something went wrong! Please remove the file and try a different document.")
 
 
+        else:
+            if query:
+                with st.spinner("Processing"):
+                    # Perform similarity search to find relevant documents
+                    docs = VectorStores.similarity_search(query=query, k=3)
 
-        if query:
-            with st.spinner("Processing"):
-                # Perform similarity search to find relevant documents
-                docs = VectorStores.similarity_search(query=query, k=3)
+                    # Initialize the language model and QA chain
+                    llm = GooglePalm()
+                    llm.temperature = 0.1
+                    chain = load_qa_chain(llm=llm, chain_type="stuff")
 
-                # Initialize the language model and QA chain
-                llm = GooglePalm()
-                llm.temperature = 0.1
-                chain = load_qa_chain(llm=llm, chain_type="stuff")
-
-                # Execute the QA chain to answer the user's query
-                response = chain.run(input_documents=docs, question=query)
-            st.write(response)
+                    # Execute the QA chain to answer the user's query
+                    response = chain.run(input_documents=docs, question=query)
+                st.write(response)
 
 if __name__ == '__main__':
     main()
