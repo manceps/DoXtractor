@@ -9,7 +9,8 @@ from langchain.embeddings import GooglePalmEmbeddings
 from langchain.vectorstores import FAISS
 from langchain.llms import GooglePalm
 from langchain.chains.question_answering import load_qa_chain
-
+from langchain.agents import Tool
+from langchain.tools import DuckDuckGoSearchRun
 
 # Configure Streamlit and hide hamburger and tagline
 st.set_page_config(page_title="DoXtractor | Document Knowledge Extractor", page_icon=":page_facing_up:")
@@ -23,6 +24,16 @@ st.markdown(hide_streamlit_style, unsafe_allow_html=True)
 
 def main():
     # st.header("Extract information from documents")
+
+    # Define search tool
+    search = DuckDuckGoSearchRun()
+    tools = [
+        Tool(
+            name = "Current Search",
+            func=search.run,
+            description="useful for when you need to answer questions about current events or the current state of the world or when finding news or recent information"
+        ),
+    ]
 
     # Upload multiple PDF files
     pdf_files = st.file_uploader("Upload one or more PDF documents", type='pdf', accept_multiple_files=True)
@@ -85,7 +96,7 @@ def main():
                     chain = load_qa_chain(llm=llm, chain_type="stuff")
 
                     # Execute the QA chain to answer the user's query
-                    response = chain.run(input_documents=docs, question=query)
+                    response = chain.run(input_documents=docs, question=query, tools=tools)
                 st.write(response)
 
 if __name__ == '__main__':
